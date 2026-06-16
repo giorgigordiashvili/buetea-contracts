@@ -15,6 +15,20 @@ import {
   tokenContracts,
   emailSubscriptionContracts,
 } from "./misc.js";
+import {
+  blogContracts,
+  blogCategoryContracts,
+  blogTagContracts,
+  blogCommentContracts,
+} from "./blog.js";
+import {
+  contactContracts,
+  teamContracts,
+  reviewContracts,
+  homeContracts,
+} from "./content.js";
+import { tokenPrizeContracts, leaderboardContracts } from "./rewards.js";
+import { accountContracts } from "./account.js";
 
 export { authContracts } from "./auth.js";
 export { cartContracts } from "./cart.js";
@@ -34,6 +48,20 @@ export {
   tokenContracts,
   emailSubscriptionContracts,
 } from "./misc.js";
+export {
+  blogContracts,
+  blogCategoryContracts,
+  blogTagContracts,
+  blogCommentContracts,
+} from "./blog.js";
+export {
+  contactContracts,
+  teamContracts,
+  reviewContracts,
+  homeContracts,
+} from "./content.js";
+export { tokenPrizeContracts, leaderboardContracts } from "./rewards.js";
+export { accountContracts } from "./account.js";
 
 /**
  * Flat registry of every route contract, keyed by `module.operation`. Used by
@@ -55,6 +83,17 @@ export const contracts = {
   ...prefix("district", districtContracts),
   ...prefix("token", tokenContracts),
   ...prefix("emailSubscription", emailSubscriptionContracts),
+  ...prefix("blog", blogContracts),
+  ...prefix("blogCategory", blogCategoryContracts),
+  ...prefix("blogTag", blogTagContracts),
+  ...prefix("blogComment", blogCommentContracts),
+  ...prefix("contact", contactContracts),
+  ...prefix("team", teamContracts),
+  ...prefix("review", reviewContracts),
+  ...prefix("home", homeContracts),
+  ...prefix("tokenPrize", tokenPrizeContracts),
+  ...prefix("leaderboard", leaderboardContracts),
+  ...prefix("account", accountContracts),
 } as const;
 
 function prefix<T extends Record<string, unknown>>(
