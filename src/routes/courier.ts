@@ -1,7 +1,16 @@
 import { z } from "zod";
 import { defineRoute } from "../http.js";
-import { zOrder, zOrderStatus } from "../entities/order.js";
+import { zOrderStatus } from "../entities/order.js";
 import { zAccount } from "../entities/account.js";
+
+// Courier order/stat payloads are kept loose (z.any) until verified against the
+// live courier endpoints, so adopting the contract can't break the running app.
+const zOrderList = z
+  .object({ message: z.string().optional(), orders: z.array(z.any()) })
+  .passthrough();
+const zOrderResult = z
+  .object({ message: z.string().optional(), order: z.any() })
+  .passthrough();
 
 export const courierContracts = {
   login: defineRoute({
@@ -23,9 +32,7 @@ export const courierContracts = {
     path: "/courier/available-orders",
     auth: "roles",
     roles: ["COURIER"],
-    response: z
-      .object({ message: z.string().optional(), orders: z.array(zOrder) })
-      .passthrough(),
+    response: zOrderList,
   }),
 
   myOrders: defineRoute({
@@ -33,9 +40,7 @@ export const courierContracts = {
     path: "/courier/orders",
     auth: "roles",
     roles: ["COURIER"],
-    response: z
-      .object({ message: z.string().optional(), orders: z.array(zOrder) })
-      .passthrough(),
+    response: zOrderList,
   }),
 
   orderDetails: defineRoute({
@@ -44,7 +49,7 @@ export const courierContracts = {
     auth: "roles",
     roles: ["COURIER"],
     params: z.object({ id: z.string() }),
-    response: z.object({ message: z.string().optional(), order: zOrder }).passthrough(),
+    response: zOrderResult,
   }),
 
   pickOrder: defineRoute({
@@ -53,7 +58,7 @@ export const courierContracts = {
     auth: "roles",
     roles: ["COURIER"],
     params: z.object({ orderId: z.string() }),
-    response: z.object({ message: z.string() }).passthrough(),
+    response: zOrderResult,
   }),
 
   updateOrderStatus: defineRoute({
@@ -63,7 +68,7 @@ export const courierContracts = {
     roles: ["COURIER"],
     params: z.object({ id: z.string() }),
     body: z.object({ status: zOrderStatus }),
-    response: z.object({ message: z.string() }).passthrough(),
+    response: zOrderResult,
   }),
 
   stats: defineRoute({
@@ -71,6 +76,8 @@ export const courierContracts = {
     path: "/courier/stats",
     auth: "roles",
     roles: ["COURIER"],
-    response: z.object({}).passthrough(),
+    response: z
+      .object({ message: z.string().optional(), stats: z.any() })
+      .passthrough(),
   }),
 } as const;
