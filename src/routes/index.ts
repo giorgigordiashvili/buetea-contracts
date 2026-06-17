@@ -29,6 +29,14 @@ import {
 } from "./content.js";
 import { tokenPrizeContracts, leaderboardContracts } from "./rewards.js";
 import { accountContracts } from "./account.js";
+import { adminContracts } from "./admin.js";
+import { dashboardContracts } from "./dashboard.js";
+import { storeContracts } from "./store.js";
+import {
+  lifestyleContracts,
+  productTypeContracts,
+  productCategoryContracts,
+} from "./filtration.js";
 
 export { authContracts } from "./auth.js";
 export { cartContracts } from "./cart.js";
@@ -62,6 +70,14 @@ export {
 } from "./content.js";
 export { tokenPrizeContracts, leaderboardContracts } from "./rewards.js";
 export { accountContracts } from "./account.js";
+export { adminContracts } from "./admin.js";
+export { dashboardContracts } from "./dashboard.js";
+export { storeContracts } from "./store.js";
+export {
+  lifestyleContracts,
+  productTypeContracts,
+  productCategoryContracts,
+} from "./filtration.js";
 
 /**
  * Flat registry of every route contract, keyed by `module.operation`. Used by
@@ -94,6 +110,12 @@ export const contracts = {
   ...prefix("tokenPrize", tokenPrizeContracts),
   ...prefix("leaderboard", leaderboardContracts),
   ...prefix("account", accountContracts),
+  ...prefix("admin", adminContracts),
+  ...prefix("dashboard", dashboardContracts),
+  ...prefix("store", storeContracts),
+  ...prefix("lifestyle", lifestyleContracts),
+  ...prefix("productType", productTypeContracts),
+  ...prefix("productCategory", productCategoryContracts),
 } as const;
 
 function prefix<T extends Record<string, unknown>>(
