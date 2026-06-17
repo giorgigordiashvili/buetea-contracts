@@ -74,4 +74,23 @@ export const paymentContracts = {
     roles: ["ADMIN", "OWNER"],
     response: z.object({ message: z.string(), payments: z.array(z.unknown()) }),
   }),
+
+  approveAdmin: defineRoute({
+    method: "POST",
+    path: "/payments/admin/:orderId/approve",
+    auth: "roles",
+    roles: ["ADMIN", "OWNER"],
+    params: z.object({ orderId: z.string() }),
+    body: z.object({ amount: z.number().optional(), description: z.string().optional() }),
+    response: z.object({ message: z.string(), action: z.unknown() }),
+  }),
+  cancelAdmin: defineRoute({
+    method: "POST",
+    path: "/payments/admin/:orderId/cancel",
+    auth: "roles",
+    roles: ["ADMIN", "OWNER"],
+    params: z.object({ orderId: z.string() }),
+    body: z.object({ description: z.string().optional() }),
+    response: z.object({ message: z.string(), action: z.unknown() }),
+  }),
 } as const;

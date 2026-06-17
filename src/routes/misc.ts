@@ -29,6 +29,31 @@ export const tokenContracts = {
     auth: "jwt",
     response: z.object({}).passthrough(),
   }),
+  activity: defineRoute({
+    method: "GET",
+    path: "/token/activity",
+    auth: "jwt",
+    query: z.object({ limit: z.string().optional() }),
+    response: z
+      .object({
+        message: z.string().optional(),
+        activities: z.array(z.object({}).passthrough()),
+      })
+      .passthrough(),
+  }),
+  redeem: defineRoute({
+    method: "POST",
+    path: "/token/redeem",
+    auth: "jwt",
+    body: z.object({ amount: z.number().min(0.01), description: z.string().optional() }),
+    response: z
+      .object({
+        message: z.string().optional(),
+        balance: z.unknown(),
+        redeemedAmount: z.unknown(),
+      })
+      .passthrough(),
+  }),
 } as const;
 
 /** Newsletter. */
