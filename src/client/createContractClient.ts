@@ -38,6 +38,16 @@ export interface ContractClientOptions {
   onUnauthorized?: () => void;
   /** Extra headers to merge into every request. */
   defaultHeaders?: Record<string, string>;
+  /**
+   * How to handle a response that doesn't match its contract:
+   * - `throw` (default): raise a `ContractDriftError`.
+   * - `warn`: log via `onDrift` (or console.warn) and return the raw response —
+   *   the safe choice while incrementally adopting contracts against a live API.
+   * - `off`: skip response validation entirely.
+   */
+  validateResponses?: "throw" | "warn" | "off";
+  /** Called (instead of throwing) when `validateResponses` is `warn`. */
+  onDrift?: (error: ContractDriftError) => void;
 }
 
 export interface CallInput {
@@ -144,14 +154,21 @@ export function createContractClient(opts: ContractClientOptions) {
     }
     if (!res.ok) throw await parseError(res);
 
-    if (route.rawResponse) {
-      return (await safeJson(res)) as ResponseOf<R>;
+    const json = await safeJson(res);
+
+    if (route.rawResponse || opts.validateResponses === "off") {
+      return json as ResponseOf<R>;
     }
 
-    const json = await safeJson(res);
     const result = route.response.safeParse(json);
     if (!result.success) {
-      throw new ContractDriftError(route.method, route.path, result.error);
+      const drift = new ContractDriftError(route.method, route.path, result.error);
+      if (opts.validateResponses === "warn") {
+        if (opts.onDrift) opts.onDrift(drift);
+        else if (typeof console !== "undefined") console.warn(drift.message);
+        return json as ResponseOf<R>; // never break the app over a schema mismatch
+      }
+      throw drift;
     }
     return result.data as ResponseOf<R>;
   };
