@@ -68,6 +68,14 @@ export const adminContracts = {
     body: zCreateAdmin,
     response: zCreateResult,
   }),
+  createCourier: defineRoute({
+    method: "POST",
+    path: "/admin/courier/create",
+    auth: "roles",
+    roles: adminRoles,
+    body: zCreateAdmin,
+    response: zCreateResult,
+  }),
   getCouriers: defineRoute({
     method: "GET",
     path: "/admin/couriers",
